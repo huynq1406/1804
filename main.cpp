@@ -2,31 +2,18 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "Untitled2.h"
-#include "nhanvat.h"
 #include "Untitled1.h"
+#include "nhanvat.h"
 
 using namespace std;
-
-void waitUntilKeyPressed()
-{
-    SDL_Event e;
-    while (true) {
-        if ( SDL_PollEvent(&e) != 0 &&
-             (e.type == SDL_KEYDOWN || e.type == SDL_QUIT) )
-            return;
-        SDL_Delay(10);
-    }
-}
-
 
 int main(int argc, char *argv[])
 {
     Graphics graphics;
     graphics.init();
 
-    Mouse mouse;
-    mouse.x = SCREEN_WIDTH / 2;
-    mouse.y = SCREEN_HEIGHT / 2;
+    Mouse mouse(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    Cheese cheese(100, 100);
 
     bool quit = false;
     SDL_Event event;
@@ -36,6 +23,7 @@ int main(int argc, char *argv[])
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) quit = true;
         }
+
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 
         if (currentKeyStates[SDL_SCANCODE_UP]) mouse.turnNorth();
@@ -44,14 +32,16 @@ int main(int argc, char *argv[])
         if (currentKeyStates[SDL_SCANCODE_RIGHT]) mouse.turnEast();
 
         mouse.move();
+        if (mouse.canEat(cheese)) mouse.grow();
 
         render(mouse, graphics);
-        waitUntilKeyPressed();
+        render(cheese, graphics);
+
         graphics.presentScene();
         SDL_Delay(10);
     }
+
     graphics.quit();
     return 0;
 }
-
 
