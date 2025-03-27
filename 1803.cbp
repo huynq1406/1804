@@ -43,6 +43,8 @@
 		<Unit filename="Untitled2.cpp" />
 		<Unit filename="Untitled2.h" />
 		<Unit filename="def.cpp" />
+		<Unit filename="defs.h" />
+		<Unit filename="graphic.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="nhanvat.h" />
 		<Extensions>

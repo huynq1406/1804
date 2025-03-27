@@ -1,5 +1,5 @@
-#ifndef UNTITLED1_H
-#define UNTITLED1_H
+#ifndef DEFS_H
+#define DEFS_H
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
