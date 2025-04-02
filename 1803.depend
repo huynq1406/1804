@@ -460,10 +460,11 @@
 	<SDL.h>
 	<SDL_image.h>
 
-1743041650 source:c:\users\dell\documents\lap trinh nang cao\1803\main.cpp
+1743062766 source:c:\users\dell\documents\lap trinh nang cao\1803\main.cpp
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
+	<algorithm>
 	"defs.h"
 	"graphic.h"
 	"nhanvat.h"
@@ -480,9 +481,13 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1743040503 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1743083124 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+	<SDL.h>
+	<iostream>
+	<cmath>
+	<algorithm>
 
-1743040465 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
+1743062451 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
 1743036816 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
 	<SDL.h>
