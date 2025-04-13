@@ -7,10 +7,38 @@ class Ball {
 public:
     float x, y;
     float vx, vy;
-    Ball(float startX, float startY) : x(startX), y(startY), vx(0), vy(0) {}
+    float amping;
+    SDL_Renderer* renderer; // Thêm renderer làm biến thành viên
+    SDL_Texture* texture;
+    Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath) : x(startX), y(startY), vx(0), vy(0), amping(0.99f),renderer(rend), texture(nullptr) {}
     void updatePosition(float deltaTime) {
         x += vx * deltaTime;
         y += vy * deltaTime;
+        vx *= amping; // Giảm vận tốc theo hệ số giảm chấn
+        vy *= amping; // Giảm vận tốc theo hệ số giảm chấn
+
+        // Dừng bóng khi vận tốc rất nhỏ
+        if (std::abs(vx) < 0.01f) vx = 0;
+        if (std::abs(vy) < 0.01f) vy = 0;
+    }
+    Ball(SDL_Renderer* rend, const char* filePath) {
+        renderer = rend;
+        SDL_Surface* surface = IMG_Load("3d-animated-golf-ball-videohive-download-7751583-free-hunterae-com-5-removebg-preview.png"); // Tải tệp PNG
+        if (!surface) {
+            printf("Không thể tải hình ảnh: %s\n", IMG_GetError());
+            return;
+        }
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+        if (!texture) {
+            printf("Không thể tạo texture: %s\n", SDL_GetError());
+        }
+    }
+
+    Ball() {
+        if (texture){
+        SDL_DestroyTexture(texture);
+        }
     }
 };
 
@@ -25,11 +53,15 @@ public:
     bool isDragging = false;
     int start_x = 0, start_y = 0;
 
-    Game() : ball(100.0f, 300.0f), hole_x(700.0f), hole_y(500.0f), hole_radius(15.0f), obs_x(400.0f), obs_y(250.0f), obs_w(50.0f), obs_h(100.0f) {}
+    Game() : ball(100.0f, 300.0f, nullptr, "3d-animated-golf-ball-videohive-download-7751583-free-hunterae-com-5-removebg-preview.png"), hole_x(700.0f), hole_y(500.0f), hole_radius(15.0f), obs_x(400.0f), obs_y(250.0f), obs_w(50.0f), obs_h(100.0f) {}
 
     bool init() {
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
             std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
+            return false;
+        }
+        if (!IMG_Init(IMG_INIT_PNG)) { // Khởi tạo SDL_image với hỗ trợ PNG
+            std::cerr << "IMG_Init Error: " << IMG_GetError() << std::endl;
             return false;
         }
         window = SDL_CreateWindow("Golf Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -74,8 +106,8 @@ public:
     // Kiểm tra xem khoảng cách có nhỏ hơn bán kính của quả bóng hay không
     if (distanceSquared < (BALL_RADIUS * BALL_RADIUS)) {
         // Đảo ngược vận tốc khi va chạm xảy ra
-        if (dx != 0) ball.vx = -ball.vx;
-        if (dy != 0) ball.vy = -ball.vy;
+        if (dx != 0) ball.vx = -ball.vx*1.01;
+        if (dy != 0) ball.vy = -ball.vy*1.01;
         return true;
     }
     return false;
