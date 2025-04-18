@@ -175,10 +175,6 @@ public:
         if (ball.texture) {
         SDL_Rect ballRect = { (int)(ball.x - BALL_RADIUS), (int)(ball.y - BALL_RADIUS), (int)(BALL_RADIUS * 2), (int)(BALL_RADIUS * 2) };
         SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
-    } else {
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_Rect holeRect = { (int)(hole_x - hole_radius), (int)(hole_y - hole_radius), (int)(hole_radius * 2), (int)(hole_radius * 2) };
-        SDL_RenderFillRect(renderer, &holeRect);
         }
         // Vẽ lỗ golf
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
