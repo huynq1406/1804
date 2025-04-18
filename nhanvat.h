@@ -2,43 +2,43 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm> // std::clamp
+using namespace std;
 
 class Ball {
 public:
     float x, y;
     float vx, vy;
     float amping;
-    SDL_Renderer* renderer; // Thêm renderer làm biến thành viên
+    SDL_Renderer* renderer;
     SDL_Texture* texture;
-    Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath) : x(startX), y(startY), vx(0), vy(0), amping(0.99f),renderer(rend), texture(nullptr) {}
-    void updatePosition(float deltaTime) {
-        x += vx * deltaTime;
-        y += vy * deltaTime;
-        vx *= amping; // Giảm vận tốc theo hệ số giảm chấn
-        vy *= amping; // Giảm vận tốc theo hệ số giảm chấn
 
-        // Dừng bóng khi vận tốc rất nhỏ
-        if (std::abs(vx) < 0.01f) vx = 0;
-        if (std::abs(vy) < 0.01f) vy = 0;
-    }
-    Ball(SDL_Renderer* rend, const char* filePath) {
-        renderer = rend;
-        SDL_Surface* surface = IMG_Load("3d-animated-golf-ball-videohive-download-7751583-free-hunterae-com-5-removebg-preview.png"); // Tải tệp PNG
+    Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath)
+        : x(startX), y(startY), vx(0), vy(0), amping(0.98f), renderer(rend), texture(nullptr) {
+        SDL_Surface* surface = IMG_Load(filePath);
         if (!surface) {
-            printf("Không thể tải hình ảnh: %s\n", IMG_GetError());
+            cerr << "Không thể tải file ảnh: " << IMG_GetError() << endl;
             return;
         }
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
         if (!texture) {
-            printf("Không thể tạo texture: %s\n", SDL_GetError());
+            cerr << "Không thể tạo texture: " << SDL_GetError() << endl;
         }
     }
 
-    Ball() {
-        if (texture){
-        SDL_DestroyTexture(texture);
+    ~Ball() {
+        if (texture) {
+            SDL_DestroyTexture(texture);
         }
+    }
+
+    void updatePosition(float deltaTime) {
+        x += vx * deltaTime;
+        y += vy * deltaTime;
+        vx *= amping;
+        vy *= amping;
+        if (abs(vx) < 0.01f) vx = 0;
+        if (abs(vy) < 0.01f) vy = 0;
     }
 };
 
@@ -53,7 +53,7 @@ public:
     bool isDragging = false;
     int start_x = 0, start_y = 0;
 
-    Game() : ball(100.0f, 300.0f, nullptr, "3d-animated-golf-ball-videohive-download-7751583-free-hunterae-com-5-removebg-preview.png"), hole_x(700.0f), hole_y(500.0f), hole_radius(15.0f), obs_x(400.0f), obs_y(250.0f), obs_w(50.0f), obs_h(100.0f) {}
+    Game() : ball(100.0f, 300.0f, renderer, "ball.png"), hole_x(700.0f), hole_y(500.0f), hole_radius(15.0f), obs_x(400.0f), obs_y(250.0f), obs_w(50.0f), obs_h(100.0f) {}
 
     bool init() {
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -163,14 +163,23 @@ public:
 
     void render() {
         // Vẽ màn hình
-        SDL_SetRenderDrawColor(renderer, 0, 128, 0, 255);
-        SDL_RenderClear(renderer);
+         SDL_Texture* bgTexture = IMG_LoadTexture(renderer, "forest.jpg");
+    if (!bgTexture) {
+        std::cerr << "Không thể tải background: " << IMG_GetError() << std::endl;
+    } else {
+        SDL_RenderCopy(renderer, bgTexture, NULL, NULL); // Render background to fill the screen
+        SDL_DestroyTexture(bgTexture); // Clean up texture
+    }
 
         // Vẽ bóng
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        if (ball.texture) {
         SDL_Rect ballRect = { (int)(ball.x - BALL_RADIUS), (int)(ball.y - BALL_RADIUS), (int)(BALL_RADIUS * 2), (int)(BALL_RADIUS * 2) };
-        SDL_RenderFillRect(renderer, &ballRect);
-
+        SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
+    } else {
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_Rect holeRect = { (int)(hole_x - hole_radius), (int)(hole_y - hole_radius), (int)(hole_radius * 2), (int)(hole_radius * 2) };
+        SDL_RenderFillRect(renderer, &holeRect);
+        }
         // Vẽ lỗ golf
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_Rect holeRect = { (int)(hole_x - hole_radius), (int)(hole_y - hole_radius), (int)(hole_radius * 2), (int)(hole_radius * 2) };

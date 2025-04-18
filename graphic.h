@@ -31,7 +31,7 @@ struct Graphics {
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         //Khi chạy trong máy ảo (ví dụ phòng máy ở trường)
         //renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
-        golfBallTexture = loadTexture("3d-animated-golf-ball-videohive-download-7751583-free-hunterae-com-5-removebg-preview.png");
+        golfBallTexture = loadTexture("ball.png");
         if (golfBallTexture == nullptr) logErrorAndExit("LoadTexture", IMG_GetError());
         if (renderer == nullptr) logErrorAndExit("CreateRenderer", SDL_GetError());
 
