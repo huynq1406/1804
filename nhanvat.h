@@ -2,34 +2,32 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm> // std::clamp
+#include "defs.h"
 using namespace std;
-
 class Ball {
 public:
     float x, y;
     float vx, vy;
     float amping;
     SDL_Renderer* renderer;
-    SDL_Texture* texture;
+    SDL_Texture* texture; // Lưu golfBallTexture
 
-    Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath)
+   Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath)
         : x(startX), y(startY), vx(0), vy(0), amping(0.98f), renderer(rend), texture(nullptr) {
         SDL_Surface* surface = IMG_Load(filePath);
         if (!surface) {
-            cerr << "Không thể tải file ảnh: " << IMG_GetError() << endl;
+            std::cerr << "Không thể tải file ảnh: " << IMG_GetError() << endl;
             return;
         }
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
         if (!texture) {
-            cerr << "Không thể tạo texture: " << SDL_GetError() << endl;
+            std::cerr << "Không thể tạo texture: " << SDL_GetError() << endl;
         }
     }
 
     ~Ball() {
-        if (texture) {
-            SDL_DestroyTexture(texture);
-        }
+        // Không hủy texture vì nó thuộc về Graphics
     }
 
     void updatePosition(float deltaTime) {
@@ -39,6 +37,19 @@ public:
         vy *= amping;
         if (abs(vx) < 0.01f) vx = 0;
         if (abs(vy) < 0.01f) vy = 0;
+    }
+
+    void drawCircle(int radius) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        for (int w = 0; w < radius * 2; w++) {
+            for (int h = 0; h < radius * 2; h++) {
+                int dx = radius - w;
+                int dy = radius - h;
+                if ((dx * dx + dy * dy) <= (radius * radius)) {
+                    SDL_RenderDrawPoint(renderer, x + dx, y + dy);
+                }
+            }
+        }
     }
 };
 
@@ -163,7 +174,7 @@ public:
 
     void render() {
         // Vẽ màn hình
-         SDL_Texture* bgTexture = IMG_LoadTexture(renderer, "forest.jpg");
+         SDL_Texture* bgTexture = IMG_LoadTexture(renderer, "New Piskel.png");
     if (!bgTexture) {
         std::cerr << "Không thể tải background: " << IMG_GetError() << std::endl;
     } else {
@@ -175,7 +186,9 @@ public:
         if (ball.texture) {
         SDL_Rect ballRect = { (int)(ball.x - BALL_RADIUS), (int)(ball.y - BALL_RADIUS), (int)(BALL_RADIUS * 2), (int)(BALL_RADIUS * 2) };
         SDL_RenderCopy(renderer, ball.texture, NULL, &ballRect);
-        }
+    } else {
+        ball.drawCircle((float)BALL_RADIUS); // Fallback: draw a circle
+    }
         // Vẽ lỗ golf
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_Rect holeRect = { (int)(hole_x - hole_radius), (int)(hole_y - hole_radius), (int)(hole_radius * 2), (int)(hole_radius * 2) };
