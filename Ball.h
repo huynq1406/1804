@@ -2,6 +2,7 @@
 #define BALL_H
 
 #include "graphic.h"
+using namespace std;
 class Ball {
 public:
     float x, y;
@@ -10,16 +11,22 @@ public:
     SDL_Renderer* renderer;
     SDL_Texture* texture; // Lưu golfBallTexture
 
-   Ball(Graphics &graphics, const char *imagePath, int startX, int startY)
-        : x(startX), y(startY) {
-        texture = graphics.loadTexture(imagePath); // Tải texture từ hình ảnh
-        if (texture == nullptr) {
-            SDL_LogMessage(SDL_LOG_CATEGORY_ERROR, SDL_LOG_PRIORITY_ERROR, "Failed to load ball texture");
+    Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath)
+        : x(startX), y(startY), vx(0), vy(0), amping(0.98f), renderer(rend), texture(nullptr) {
+        SDL_Surface* surface = IMG_Load(filePath);
+        if (!surface) {
+            std::cerr << "Không thể tải file ảnh: " << IMG_GetError() << endl;
+            return;
+        }
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+        if (!texture) {
+            std::cerr << "Không thể tạo texture: " << SDL_GetError() << endl;
         }
     }
 
     ~Ball() {
-        // Không hủy texture vì nó thuộc về Graphics
+        if (texture) SDL_DestroyTexture(texture);
     }
 
     void updatePosition(float deltaTime) {
@@ -44,4 +51,5 @@ public:
         }
     }
 };
+
 #endif

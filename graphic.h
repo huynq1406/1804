@@ -28,7 +28,7 @@ struct Graphics {
         if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG))
             logErrorAndExit( "SDL_image error:", IMG_GetError());
 
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         //Khi chạy trong máy ảo (ví dụ phòng máy ở trường)
         //renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
         golfBallTexture = loadTexture("ball.png");
