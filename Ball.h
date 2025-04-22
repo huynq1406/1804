@@ -11,17 +11,11 @@ public:
     SDL_Renderer* renderer;
     SDL_Texture* texture; // Lưu golfBallTexture
 
-    Ball(float startX, float startY, SDL_Renderer* rend, const char* filePath)
+    Ball(float startX, float startY, SDL_Renderer* rend, SDL_Texture* tex)
         : x(startX), y(startY), vx(0), vy(0), amping(0.98f), renderer(rend), texture(nullptr) {
-        SDL_Surface* surface = IMG_Load(filePath);
-        if (!surface) {
+        if (!texture) {
             std::cerr << "Không thể tải file ảnh: " << IMG_GetError() << endl;
             return;
-        }
-        texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-        if (!texture) {
-            std::cerr << "Không thể tạo texture: " << SDL_GetError() << endl;
         }
     }
 

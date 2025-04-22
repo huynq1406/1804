@@ -6,73 +6,83 @@
 #include "defs.h"
 
 struct Graphics {
-    SDL_Renderer *renderer;
-	SDL_Window *window;
-	SDL_Texture *golfBallTexture;
+    SDL_Renderer* renderer;
+    SDL_Window* window;
+    SDL_Texture* golfBallTexture;
+    SDL_Texture* backgroundTexture;
 
-	void logErrorAndExit(const char* msg, const char* error)
-    {
+    void logErrorAndExit(const char* msg, const char* error) {
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s: %s", msg, error);
         SDL_Quit();
     }
 
-	void init() {
+    void init() {
+        // In thư mục làm việc hiện tại để kiểm tra
         if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
             logErrorAndExit("SDL_Init", SDL_GetError());
 
-        window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-        //full screen
-        //window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        window = SDL_CreateWindow("Golf Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
         if (window == nullptr) logErrorAndExit("CreateWindow", SDL_GetError());
 
         if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG))
-            logErrorAndExit( "SDL_image error:", IMG_GetError());
+            logErrorAndExit("SDL_image error:", IMG_GetError());
 
         renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-        //Khi chạy trong máy ảo (ví dụ phòng máy ở trường)
-        //renderer = SDL_CreateSoftwareRenderer(SDL_GetWindowSurface(window));
-        golfBallTexture = loadTexture("ball.png");
-        if (golfBallTexture == nullptr) logErrorAndExit("LoadTexture", IMG_GetError());
         if (renderer == nullptr) logErrorAndExit("CreateRenderer", SDL_GetError());
 
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
         SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-    }
-    SDL_Texture *loadTexture(const char *filename){
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
 
-        SDL_Texture *texture = IMG_LoadTexture(renderer, filename);
+        // Tải golfBallTexture
+        golfBallTexture = loadTexture("ball.png");
+        if (golfBallTexture == nullptr) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải ball.png: %s", IMG_GetError());
+        }
+
+        // Tải backgroundTexture
+        backgroundTexture = loadTexture(const char* filename);
+        if (backgroundTexture == nullptr) {
+            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải : %s", IMG_GetError());
+        }
+    }
+
+    SDL_Texture* loadTexture(const char* filename) {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
+        SDL_Texture* texture = IMG_LoadTexture(renderer, filename);
         if (texture == NULL)
             SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Load texture %s", IMG_GetError());
-
         return texture;
     }
 
-    void renderTexture(SDL_Texture *texture, int x, int y)
-    {
-        SDL_Rect dest;
+    void renderTexture(SDL_Texture* texture, int x, int y, int w = -1, int h = -1) {
+        if (!texture) return;
 
+        SDL_Rect dest;
         dest.x = x;
         dest.y = y;
-        SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+
+        if (w == -1 || h == -1) {
+            SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+        } else {
+            dest.w = w;
+            dest.h = h;
+        }
 
         SDL_RenderCopy(renderer, texture, NULL, &dest);
     }
 
-    void blitRect(SDL_Texture *texture, SDL_Rect *src, int x, int y)
-    {
+    void blitRect(SDL_Texture* texture, SDL_Rect* src, int x, int y) {
         SDL_Rect dest;
-
         dest.x = x;
         dest.y = y;
         dest.w = src->w;
         dest.h = src->h;
-
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
 
-    void quit()
-    {
+    void quit() {
+        if (golfBallTexture) SDL_DestroyTexture(golfBallTexture);
+        if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         IMG_Quit();

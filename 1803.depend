@@ -460,7 +460,7 @@
 	<SDL.h>
 	<SDL_image.h>
 
-1743062766 source:c:\users\dell\documents\lap trinh nang cao\1803\main.cpp
+1745196488 source:c:\users\dell\documents\lap trinh nang cao\1803\main.cpp
 	<iostream>
 	<SDL.h>
 	<SDL_image.h>
@@ -481,21 +481,22 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1745029399 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1745196959 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
 	<SDL.h>
 	<iostream>
 	<cmath>
 	<algorithm>
 	"defs.h"
+	"graphic.h"
 	"Ball.h"
 
-1743062451 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
+1745284830 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
-1745071095 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
+1745284973 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
 	<SDL.h>
 	<SDL_image.h>
 	"defs.h"
 
-1745029416 c:\users\dell\documents\lap trinh nang cao\1803\ball.h
+1745195966 c:\users\dell\documents\lap trinh nang cao\1803\ball.h
 	"graphic.h"
 
