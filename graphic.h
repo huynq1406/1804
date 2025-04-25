@@ -40,7 +40,7 @@ struct Graphics {
         }
 
         // Tải backgroundTexture
-        backgroundTexture = loadTexture(const char* filename);
+        backgroundTexture = loadTexture("New Piskel.png");
         if (backgroundTexture == nullptr) {
             SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải : %s", IMG_GetError());
         }
