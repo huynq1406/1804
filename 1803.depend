@@ -481,22 +481,30 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1745546982 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1745651196 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
 	<SDL.h>
 	<iostream>
 	<cmath>
 	<algorithm>
+	<vector>
 	"defs.h"
 	"graphic.h"
 	"Ball.h"
+	"obstacles.h"
 
 1745284830 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
-1745546982 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
+1745565547 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
 	<SDL.h>
 	<SDL_image.h>
 	"defs.h"
 
 1745195966 c:\users\dell\documents\lap trinh nang cao\1803\ball.h
+	"graphic.h"
+
+1745635196 source:c:\users\dell\documents\lap trinh nang cao\1803\obstacle.cpp
+	"graphic.h"
+
+1745635452 c:\users\dell\documents\lap trinh nang cao\1803\obstacles.h
 	"graphic.h"
 

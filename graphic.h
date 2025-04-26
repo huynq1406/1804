@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include "defs.h"
 
+
 struct Graphics {
     SDL_Renderer* renderer;
     SDL_Window* window;
@@ -17,34 +18,33 @@ struct Graphics {
     }
 
     void init() {
-        // In thư mục làm việc hiện tại để kiểm tra
-        if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-            logErrorAndExit("SDL_Init", SDL_GetError());
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+        logErrorAndExit("SDL_Init", SDL_GetError());
 
-        window = SDL_CreateWindow("Golf Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-        if (window == nullptr) logErrorAndExit("CreateWindow", SDL_GetError());
+    window = SDL_CreateWindow("Golf Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (window == nullptr) logErrorAndExit("CreateWindow", SDL_GetError());
 
-        if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG))
-            logErrorAndExit("SDL_image error:", IMG_GetError());
+    if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG))
+        logErrorAndExit("SDL_image error:", IMG_GetError());
 
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-        if (renderer == nullptr) logErrorAndExit("CreateRenderer", SDL_GetError());
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (renderer == nullptr) logErrorAndExit("CreateRenderer", SDL_GetError());
 
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-        SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        // Tải golfBallTexture
-        golfBallTexture = loadTexture("ball.png");
-        if (golfBallTexture == nullptr) {
-            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải ball.png: %s", IMG_GetError());
-        }
-
-        // Tải backgroundTexture
-        backgroundTexture = loadTexture("New Piskel.png");
-        if (backgroundTexture == nullptr) {
-            SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải : %s", IMG_GetError());
-        }
+    // Tải golfBallTexture
+    golfBallTexture = loadTexture("ball.png");
+    if (golfBallTexture == nullptr) {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải ball.png: %s", IMG_GetError());
     }
+
+    // Tải backgroundTexture
+    backgroundTexture = loadTexture("Sân cỏ.png");
+    if (backgroundTexture == nullptr) {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải : %s", IMG_GetError());
+    }
+}
 
     SDL_Texture* loadTexture(const char* filename) {
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
@@ -71,6 +71,18 @@ struct Graphics {
         SDL_RenderCopy(renderer, texture, NULL, &dest);
     }
 
+    void drawCircle(int radius, float x, float y) {
+        for (int w = 0; w < radius * 2; w++) {
+            for (int h = 0; h < radius * 2; h++) {
+                int dx = radius - w;
+                int dy = radius - h;
+                if ((dx * dx + dy * dy) <= (radius * radius)) {
+                    SDL_RenderDrawPoint(renderer, x + dx, y + dy);
+                }
+            }
+        }
+    }
+
     void blitRect(SDL_Texture* texture, SDL_Rect* src, int x, int y) {
         SDL_Rect dest;
         dest.x = x;
@@ -79,7 +91,6 @@ struct Graphics {
         dest.h = src->h;
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
-
     void quit() {
         if (golfBallTexture) SDL_DestroyTexture(golfBallTexture);
         if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);

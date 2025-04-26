@@ -2,14 +2,16 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <vector>
 #include "defs.h"
 #include "graphic.h"
 #include "Ball.h"
-
+#include "obstacles.h"
 using namespace std;
 
 class Game {
 public:
+    vector <Obstacles> obstacles;
     Graphics graphics;
     Ball* ball = nullptr;
     float hole_x, hole_y, hole_radius;
@@ -23,6 +25,8 @@ public:
     bool init() {
         graphics.init();
         ball = new Ball(100.0f, 300.0f, graphics.renderer, graphics.golfBallTexture);
+        obstacles.push_back({400.0f, 250.0f, 50.0f, 100.0f}); // Chướng ngại vật 1
+        obstacles.push_back({600.0f, 400.0f, 50.0f, 50.0f});  // Chướng ngại vật 2
         return true;
     }
 
@@ -37,19 +41,59 @@ public:
         }
     }
 
-    bool checkObstacleCollision(Ball &ball, float obs_x, float obs_y, float obs_w, float obs_h) {
-        float closestX = std::clamp(ball.x, obs_x, obs_x + obs_w);
-        float closestY = std::clamp(ball.y, obs_y, obs_y + obs_h);
-        float dx = ball.x - closestX;
-        float dy = ball.y - closestY;
-        float distanceSquared = dx * dx + dy * dy;
-        if (distanceSquared < (BALL_RADIUS * BALL_RADIUS)) {
-            if (dx != 0) ball.vx = -ball.vx * 1.01;
-            if (dy != 0) ball.vy = -ball.vy * 1.01;
-            return true;
-        }
-        return false;
+   bool checkObstacleCollision(Ball &ball, float obs_x, float obs_y, float obs_w, float obs_h) {
+    // Tìm điểm gần nhất từ tâm bóng tới vùng chướng ngại vật
+    float closestX = std::clamp(ball.x, obs_x, obs_x + obs_w);
+    float closestY = std::clamp(ball.y, obs_y, obs_y + obs_h);
+
+    // Tính khoảng cách từ tâm bóng tới điểm gần nhất
+    float dx = ball.x - closestX;
+    float dy = ball.y - closestY;
+
+    // Tính bình phương khoảng cách
+    float distanceSquared = dx * dx + dy * dy;
+
+    // Kiểm tra nếu khoảng cách nhỏ hơn bán kính bóng (va chạm xảy ra)
+    if (distanceSquared < (BALL_RADIUS * BALL_RADIUS)) {
+        // Đẩy bóng ra ngoài để tránh chồng lấn
+        float distance = std::sqrt(distanceSquared);
+        float overlap = BALL_RADIUS - distance;
+        float normalX = dx / distance; // Vector pháp tuyến tại điểm va chạm (chuẩn hóa)
+        float normalY = dy / distance;
+
+        ball.x += normalX * overlap; // Đẩy bóng ra khỏi chướng ngại vật
+        ball.y += normalY * overlap;
+
+        // Tính vận tốc phản xạ
+        float dotProduct = ball.vx * normalX + ball.vy * normalY; // Tích vô hướng giữa vận tốc và pháp tuyến
+        ball.vx -= 2 * dotProduct * normalX; // Thành phần phản xạ theo trục x
+        ball.vy -= 2 * dotProduct * normalY; // Thành phần phản xạ theo trục y
+
+        // Giảm vận tốc do ma sát
+        ball.vx *= 0.9f; // Giảm 10% vận tốc trên trục x
+        ball.vy *= 0.9f; // Giảm 10% vận tốc trên trục y
+
+        return true; // Có va chạm
     }
+
+    return false; // Không có va chạm
+}
+void update(float deltaTime) {
+    ball->updatePosition(deltaTime);
+    checkWallCollision(*ball);
+
+    // Kiểm tra va chạm với tất cả chướng ngại vật
+    for (auto &obstacle : obstacles) {
+        checkObstacleCollision(*ball, obstacle.x, obstacle.y, obstacle.w, obstacle.h);
+    }
+
+    if (checkHoleCollision()) {
+        ball->vx = ball->vy = 0;
+        std::cout << "Bóng vào lỗ! Hoàn thành màn chơi!" << std::endl;
+        SDL_Delay(2000);
+        running = false;
+    }
+}
 
     bool checkHoleCollision() {
         float dx = ball->x - hole_x;
@@ -58,7 +102,7 @@ public:
         return distanceSquared < (hole_radius * hole_radius);
     }
 
-    void handleMouseInput(SDL_Event &event) {
+     void handleMouseInput(SDL_Event &event) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
@@ -79,50 +123,30 @@ public:
         }
     }
 
-    void update(float deltaTime) {
-        ball->updatePosition(deltaTime);
-        checkWallCollision(*ball);
-        if (checkObstacleCollision(*ball, obs_x, obs_y, obs_w, obs_h)) {
-            ball->vx = -ball->vx;
-            ball->vy = -ball->vy;
-        }
-        if (checkHoleCollision()) {
-            ball->vx = ball->vy = 0;
-            std::cout << "Bóng vào lỗ! Hoàn thành màn chơi!" << std::endl;
-            SDL_Delay(2000);
-            running = false;
-        }
-    }
-
     void render() {
-        SDL_SetRenderDrawColor(graphics.renderer, 0, 128, 0, 255);
-        SDL_RenderClear(graphics.renderer);
+    SDL_SetRenderDrawColor(graphics.renderer, 0, 128, 0,255);
+    SDL_RenderClear(graphics.renderer);
 
-        SDL_Texture* bgTexture = graphics.loadTexture("New Piskel.png");
-        if (!bgTexture) {
-            std::cerr << "Không thể tải background: " << IMG_GetError() << std::endl;
-        } else {
-            SDL_RenderCopy(graphics.renderer, bgTexture, NULL, NULL);
-            SDL_DestroyTexture(bgTexture);
-        }
-
-        if (ball->texture) {
-            SDL_Rect ballRect = { (int)(ball->x - BALL_RADIUS), (int)(ball->y - BALL_RADIUS), (int)(BALL_RADIUS * 2), (int)(BALL_RADIUS * 2) };
-            SDL_RenderCopy(graphics.renderer, ball->texture, NULL, &ballRect);
-        } else {
-            ball->drawCircle((int)BALL_RADIUS);
-        }
-
-        SDL_SetRenderDrawColor(graphics.renderer, 0, 0, 0, 255);
-        SDL_Rect holeRect = { (int)(hole_x - hole_radius), (int)(hole_y - hole_radius), (int)(hole_radius * 2), (int)(hole_radius * 2) };
-        SDL_RenderFillRect(graphics.renderer, &holeRect);
-
-        SDL_SetRenderDrawColor(graphics.renderer, 255, 0, 0, 255);
-        SDL_Rect obstacleRect = { (int)obs_x, (int)obs_y, (int)obs_w, (int)obs_h };
-        SDL_RenderFillRect(graphics.renderer, &obstacleRect);
-
-        SDL_RenderPresent(graphics.renderer);
+    // Sử dụng backgroundTexture đã được tải sẵn trong graphics.init()
+    if (graphics.backgroundTexture) {
+        SDL_RenderCopy(graphics.renderer, graphics.backgroundTexture, NULL, NULL);
     }
+
+    if (ball->texture) {
+        SDL_Rect ballRect = { (int)(ball->x - BALL_RADIUS), (int)(ball->y - BALL_RADIUS), (int)(BALL_RADIUS * 2), (int)(BALL_RADIUS * 2) };
+        SDL_RenderCopy(graphics.renderer, ball->texture, NULL, &ballRect);
+    } else {
+        ball->drawCircle((int)BALL_RADIUS);
+    }
+    SDL_SetRenderDrawColor(graphics.renderer, 0, 0, 0, 255); // Màu đen cho lỗ gôn
+    graphics.drawCircle((int)BALL_RADIUS, hole_x, hole_y);
+
+    SDL_SetRenderDrawColor(graphics.renderer, 165, 42, 42, 255);
+    SDL_Rect obstacleRect = { (int)obs_x, (int)obs_y, (int)obs_w, (int)obs_h };
+    SDL_RenderFillRect(graphics.renderer, &obstacleRect);
+
+    SDL_RenderPresent(graphics.renderer);
+}
 
     void cleanUp() {
         delete ball;
