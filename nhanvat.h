@@ -22,13 +22,17 @@ public:
 
     Game() : hole_x(700.0f), hole_y(500.0f), hole_radius(15.0f), obs_x(400.0f), obs_y(250.0f), obs_w(50.0f), obs_h(100.0f) {}
 
-    bool init() {
-        graphics.init();
-        ball = new Ball(100.0f, 300.0f, graphics.renderer, graphics.golfBallTexture);
-        obstacles.push_back({400.0f, 250.0f, 50.0f, 100.0f}); // Chướng ngại vật 1
-        obstacles.push_back({600.0f, 400.0f, 50.0f, 50.0f});  // Chướng ngại vật 2
-        return true;
-    }
+   bool init() {
+    graphics.init();
+    ball = new Ball(100.0f, 300.0f, graphics.renderer, graphics.golfBallTexture);
+    obstacles.push_back({600.0f, 200.0f, 50.0f, 200.0f});
+    obstacles.push_back({600.0f, 350.0f, 200.0f, 50.0f});
+    obstacles.push_back({300.0f, 350.0f, 300.0f, 50.0f});
+    obstacles.push_back({600.0f, 450.0f, 50.0f, 150.0f}); // Chướng ngại vật mới
+    obstacles.push_back({400.0f, 450.0f, 200.0f, 50.0f}); // Chướng ngại vật mới
+    obstacles.push_back({400.0f, 450.0f, 50.0f, 150.0f}); // Chướng ngại vật mới
+    return true;
+}
 
     void checkWallCollision(Ball &ball) {
         if (ball.x - BALL_RADIUS <= 0 || ball.x + BALL_RADIUS >= SCREEN_WIDTH) {
@@ -141,9 +145,11 @@ void update(float deltaTime) {
     SDL_SetRenderDrawColor(graphics.renderer, 0, 0, 0, 255); // Màu đen cho lỗ gôn
     graphics.drawCircle((int)BALL_RADIUS, hole_x, hole_y);
 
-    SDL_SetRenderDrawColor(graphics.renderer, 165, 42, 42, 255);
-    SDL_Rect obstacleRect = { (int)obs_x, (int)obs_y, (int)obs_w, (int)obs_h };
+    SDL_SetRenderDrawColor(graphics.renderer, 165, 42, 42, 255); // Màu nâu
+    for (const auto& obstacle : obstacles) {
+    SDL_Rect obstacleRect = { (int)obstacle.x, (int)obstacle.y, (int)obstacle.w, (int)obstacle.h };
     SDL_RenderFillRect(graphics.renderer, &obstacleRect);
+}
 
     SDL_RenderPresent(graphics.renderer);
 }
