@@ -6,11 +6,14 @@
 #include "defs.h"
 #include "graphic.h"
 #include "Ball.h"
+#include "LevelManager.h"
+#include "IntroScreen.h"
 #include "obstacles.h"
 using namespace std;
 
 class Game {
 public:
+    LevelManager &levelManager;
     vector <Obstacles> obstacles;
     Graphics graphics;
     Ball* ball = nullptr;
@@ -25,7 +28,6 @@ public:
    bool init() {
     graphics.init();
     ball = new Ball(100.0f, 300.0f, graphics.renderer, graphics.golfBallTexture);
-    obstacles.push_back({600.0f, 200.0f, 50.0f, 200.0f});
     obstacles.push_back({600.0f, 350.0f, 200.0f, 50.0f});
     obstacles.push_back({300.0f, 350.0f, 300.0f, 50.0f});
     obstacles.push_back({600.0f, 450.0f, 50.0f, 150.0f}); // Chướng ngại vật mới
@@ -82,11 +84,10 @@ public:
 
     return false; // Không có va chạm
 }
-void update(float deltaTime) {
+void update(float deltaTime, LevelManager &levelManager) {
     ball->updatePosition(deltaTime);
     checkWallCollision(*ball);
 
-    // Kiểm tra va chạm với tất cả chướng ngại vật
     for (auto &obstacle : obstacles) {
         checkObstacleCollision(*ball, obstacle.x, obstacle.y, obstacle.w, obstacle.h);
     }
@@ -95,7 +96,15 @@ void update(float deltaTime) {
         ball->vx = ball->vy = 0;
         std::cout << "Bóng vào lỗ! Hoàn thành màn chơi!" << std::endl;
         SDL_Delay(2000);
-        running = false;
+
+        if (levelManager.isLastLevel()) {
+            running = false; // Kết thúc game nếu đây là màn cuối
+        } else {
+            levelManager.nextLevel();
+            levelManager.loadLevel(*this); // Tải màn chơi tiếp theo
+            ball->x = 100.0f;
+            ball->y = 300.0f;
+        }
     }
 }
 
@@ -159,22 +168,40 @@ void update(float deltaTime) {
         graphics.quit();
     }
 
-    void run() {
-        if (!init()) {
-            return;
-        }
-        while (running) {
-            SDL_Event event;
-            while (SDL_PollEvent(&event)) {
-                if (event.type == SDL_QUIT) {
-                    running = false;
-                }
-                handleMouseInput(event);
+   void run() {
+    IntroScreen introScreen;
+    LevelManager levelManager;
+
+    while (!introScreen.startGame) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                return;
             }
-            update(0.08f);
-            render();
-            SDL_Delay(16);
+            introScreen.handleEvent(event);
         }
-        cleanUp();
+        introScreen.render(graphics.renderer);
+        SDL_Delay(16);
     }
+
+    if (!init()) {
+        return;
+    }
+
+    levelManager.loadLevel(*this);
+
+    while (running) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            }
+            handleMouseInput(event);
+        }
+        update(0.08f, levelManager);
+        render();
+        SDL_Delay(16);
+    }
+    cleanUp();
+}
 };

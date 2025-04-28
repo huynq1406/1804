@@ -40,6 +40,8 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="Ball.h" />
+		<Unit filename="IntroScreen.h" />
+		<Unit filename="LevelManager.h" />
 		<Unit filename="Untitled1.h" />
 		<Unit filename="Untitled2.cpp" />
 		<Unit filename="Untitled2.h" />
