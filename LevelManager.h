@@ -2,6 +2,7 @@
 #define LEVELMANAGER_H
 #include <SDL.h>
 #include "graphic.h"
+#include "nhanvat.h"
 class LevelManager {
 public:
     int currentLevel = 1;
