@@ -481,7 +481,7 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1745799986 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1745987710 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
 	<SDL.h>
 	<iostream>
 	<cmath>
@@ -490,11 +490,9 @@
 	"defs.h"
 	"graphic.h"
 	"Ball.h"
-	"LevelManager.h"
-	"IntroScreen.h"
 	"obstacles.h"
 
-1745746055 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
+1745986492 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
 1745746213 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
 	<SDL.h>
@@ -514,7 +512,7 @@
 	<SDL.h>
 	"graphic.h"
 
-1745806480 c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.h
+1745898229 c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.h
 	<SDL.h>
 	"graphic.h"
 	"nhanvat.h"

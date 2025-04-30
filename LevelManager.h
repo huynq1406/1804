@@ -2,7 +2,10 @@
 #define LEVELMANAGER_H
 #include <SDL.h>
 #include "graphic.h"
-#include "nhanvat.h"
+
+// Forward declaration thay vì include nhanvat.h
+class Game;
+
 class LevelManager {
 public:
     int currentLevel = 1;
@@ -14,17 +17,14 @@ public:
             game.hole_x = 700.0f;
             game.hole_y = 500.0f;
             game.obstacles.push_back({600.0f, 200.0f, 50.0f, 200.0f});
-            // Thêm các chướng ngại vật cho màn 1
         } else if (currentLevel == 2) {
             game.hole_x = 600.0f;
             game.hole_y = 400.0f;
             game.obstacles.push_back({400.0f, 250.0f, 200.0f, 50.0f});
-            // Thêm các chướng ngại vật cho màn 2
         } else if (currentLevel == 3) {
             game.hole_x = 500.0f;
             game.hole_y = 300.0f;
             game.obstacles.push_back({300.0f, 300.0f, 100.0f, 200.0f});
-            // Thêm các chướng ngại vật cho màn 3
         }
     }
 
