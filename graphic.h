@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include "defs.h"
 
 
@@ -20,6 +21,10 @@ struct Graphics {
     void init() {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
         logErrorAndExit("SDL_Init", SDL_GetError());
+   if (TTF_Init() == -1)
+    logErrorAndExit("TTF_Init", TTF_GetError());
+else
+    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "TTF_Init successful");
 
     window = SDL_CreateWindow("Golf Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (window == nullptr) logErrorAndExit("CreateWindow", SDL_GetError());
@@ -40,9 +45,9 @@ struct Graphics {
     }
 
     // Tải backgroundTexture
-    backgroundTexture = loadTexture("Sân cỏ.png");
+    backgroundTexture = loadTexture("grass_field.png");
     if (backgroundTexture == nullptr) {
-        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải : %s", IMG_GetError());
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "Không thể tải grass_field.png: %s", IMG_GetError());
     }
 }
 
@@ -70,6 +75,34 @@ struct Graphics {
 
         SDL_RenderCopy(renderer, texture, NULL, &dest);
     }
+  void renderText(const char* text, const char* fontPath, int fontSize, SDL_Color color, int x, int y) {
+    TTF_Font* font = TTF_OpenFont(fontPath, fontSize);
+    if (font == nullptr) {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
+                       "Failed to load font '%s': %s", fontPath, TTF_GetError());
+        return;
+    }
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
+    if (surface == nullptr) {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
+                       "Failed to render text: %s", TTF_GetError());
+        TTF_CloseFont(font);
+        return;
+    }
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (texture == nullptr) {
+        SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR,
+                       "Failed to create texture from surface: %s", SDL_GetError());
+        SDL_FreeSurface(surface);
+        TTF_CloseFont(font);
+        return;
+    }
+    SDL_Rect destRect = { x, y, surface->w, surface->h };
+    SDL_RenderCopy(renderer, texture, NULL, &destRect);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+    TTF_CloseFont(font);
+}
 
     void drawCircle(int radius, float x, float y) {
         for (int w = 0; w < radius * 2; w++) {
@@ -92,12 +125,13 @@ struct Graphics {
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
     void quit() {
-        if (golfBallTexture) SDL_DestroyTexture(golfBallTexture);
-        if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        IMG_Quit();
-        SDL_Quit();
+    if (golfBallTexture) SDL_DestroyTexture(golfBallTexture);
+    if (backgroundTexture) SDL_DestroyTexture(backgroundTexture);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_Quit(); // Dọn dẹp SDL_ttf
+    IMG_Quit();
+    SDL_Quit();
     }
 };
 

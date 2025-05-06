@@ -481,7 +481,7 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1745987710 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1746513017 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
 	<SDL.h>
 	<iostream>
 	<cmath>
@@ -491,15 +491,17 @@
 	"graphic.h"
 	"Ball.h"
 	"obstacles.h"
+	"IntroScreen.h"
 
 1745986492 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
-1745746213 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
+1746512963 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_ttf.h>
 	"defs.h"
 
-1745742057 c:\users\dell\documents\lap trinh nang cao\1803\ball.h
+1746444037 c:\users\dell\documents\lap trinh nang cao\1803\ball.h
 	"graphic.h"
 
 1745635196 source:c:\users\dell\documents\lap trinh nang cao\1803\obstacle.cpp
@@ -508,7 +510,7 @@
 1745802004 c:\users\dell\documents\lap trinh nang cao\1803\obstacles.h
 	"graphic.h"
 
-1745743674 c:\users\dell\documents\lap trinh nang cao\1803\introscreen.h
+1746512963 c:\users\dell\documents\lap trinh nang cao\1803\introscreen.h
 	<SDL.h>
 	"graphic.h"
 
@@ -516,4 +518,9 @@
 	<SDL.h>
 	"graphic.h"
 	"nhanvat.h"
+
+1675732513 c:\users\dell\documents\sdl2-2.32.0\sdl2_ttf-2.20.2\x86_64-w64-mingw32\include\sdl2\sdl_ttf.h
+	"SDL.h"
+	"begin_code.h"
+	"close_code.h"
 

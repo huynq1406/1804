@@ -15,11 +15,14 @@
 					<Add option="-g" />
 					<Add directory="C:/Users/Dell/Documents/SDL2-2.32.0/x86_64-w64-mingw32/include/SDL2" />
 					<Add directory="C:/Users/Dell/Documents/SDL2_image-2.8.5/x86_64-w64-mingw32/include/SDL2" />
+					<Add directory="../../SDL2-2.32.0/SDL2_ttf-2.20.2/x86_64-w64-mingw32/include/SDL2" />
 				</Compiler>
 				<Linker>
 					<Add option="-lmingw32 -lSDL2main -lSDL2 -lSDL2_image" />
+					<Add option="-lSDL2_ttf" />
 					<Add directory="C:/Users/Dell/Documents/SDL2_image-2.8.5/x86_64-w64-mingw32/lib" />
 					<Add directory="C:/Users/Dell/Documents/SDL2-2.32.0/x86_64-w64-mingw32/lib" />
+					<Add directory="../../SDL2-2.32.0/SDL2_ttf-2.20.2/x86_64-w64-mingw32/lib" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -40,6 +43,7 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="Ball.h" />
+		<Unit filename="IntroScreen.h" />
 		<Unit filename="Untitled1.h" />
 		<Unit filename="Untitled2.cpp" />
 		<Unit filename="Untitled2.h" />
@@ -49,7 +53,6 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="nhanvat.h" />
 		<Unit filename="obstacle.cpp" />
-		<Unit filename="obstacles.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
