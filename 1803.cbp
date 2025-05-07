@@ -53,6 +53,7 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="nhanvat.h" />
 		<Unit filename="obstacle.cpp" />
+		<Unit filename="obstacles.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

@@ -24,14 +24,13 @@ public:
 
     Game() : hole_x(700.0f), hole_y(500.0f), hole_radius(15.0f), obs_x(400.0f), obs_y(250.0f), obs_w(50.0f), obs_h(100.0f) {
         graphics.init(); // Initialize graphics first
-        introScreen = new IntroScreen(&graphics, "intro.png"); // Initialize introScreen after graphics
+        introScreen = new IntroScreen(&graphics, "grass_field.png"); // Initialize introScreen after graphics
     }
     ~Game() {
         delete introScreen; // Clean up introScreen
     }
 
     bool init() {
-        graphics.init();
         ball = new Ball(100.0f, 300.0f, graphics.renderer, graphics.golfBallTexture);
         obstacles.push_back({600.0f, 400.0f, 50.0f, 200.0f});
         obstacles.push_back({600.0f, 350.0f, 200.0f, 50.0f});
@@ -185,11 +184,13 @@ public:
                 }
             }
 
-            if (introScreen->startGame) {
-                update(0.08f);
-            }
-            render();
-            SDL_Delay(16);
+           if (introScreen->startGame) {
+            update(0.08f); // Cập nhật logic game
+        } else {
+            introScreen->update(0.08f); // Cập nhật nền di chuyển
+        }
+        render();
+        SDL_Delay(16); //
         }
 
         cleanUp();

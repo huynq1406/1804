@@ -44,6 +44,10 @@ public:
             }
         }
     }
+     bool isStopped() const {
+        const float VELOCITY_THRESHOLD = 0.1f; // Ngưỡng vận tốc để coi là dừng
+        return std::abs(vx) < VELOCITY_THRESHOLD && std::abs(vy) < VELOCITY_THRESHOLD;
+    }
 };
 
 #endif
