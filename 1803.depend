@@ -481,7 +481,7 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1746551365 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1746953387 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
 	<SDL.h>
 	<iostream>
 	<cmath>
@@ -492,6 +492,7 @@
 	"Ball.h"
 	"obstacles.h"
 	"IntroScreen.h"
+	"LevelManager.h"
 
 1745986492 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
@@ -507,20 +508,24 @@
 1745635196 source:c:\users\dell\documents\lap trinh nang cao\1803\obstacle.cpp
 	"graphic.h"
 
-1745802004 c:\users\dell\documents\lap trinh nang cao\1803\obstacles.h
+1746951902 c:\users\dell\documents\lap trinh nang cao\1803\obstacles.h
 	"graphic.h"
 
-1746551612 c:\users\dell\documents\lap trinh nang cao\1803\introscreen.h
+1746582066 c:\users\dell\documents\lap trinh nang cao\1803\introscreen.h
 	<SDL.h>
 	"graphic.h"
 
-1745898229 c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.h
+1746688852 c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.h
 	<SDL.h>
 	"graphic.h"
-	"nhanvat.h"
 
 1675732513 c:\users\dell\documents\sdl2-2.32.0\sdl2_ttf-2.20.2\x86_64-w64-mingw32\include\sdl2\sdl_ttf.h
 	"SDL.h"
 	"begin_code.h"
 	"close_code.h"
+
+1746951902 source:c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.cpp
+	<iostream>
+	"LevelManager.h"
+	"nhanvat.h"
 

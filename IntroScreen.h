@@ -12,7 +12,7 @@ public:
     SDL_Texture* introTexture; // Texture for intro image
     float bgOffsetX = 0.0f; // Offset for background movement
 
-    IntroScreen(Graphics* g, const char* imagePath = "C:\\Users\\Dell\\Documents\\lap trinh nang cao\\1803\\grass_field.png") : graphics(g), introTexture(nullptr) {
+    IntroScreen(Graphics* g, const char* imagePath = "grass_field.png") : graphics(g), introTexture(nullptr) {
         // Load intro image
         introTexture = graphics->loadTexture(imagePath);
         if (introTexture == nullptr) {
@@ -31,8 +31,8 @@ public:
         }
     }
     void update(float deltaTime) {
-        // Di chuyển nền sang trái với tốc độ 100 pixel mỗi giây
-        bgOffsetX -= 60.0f * deltaTime;
+        // Di chuyển nền sang trái với tốc độ 60 pixel mỗi giây
+        bgOffsetX -= 40.0f * deltaTime;
         // Lặp lại khi offset vượt quá chiều rộng của texture
         int texW;
         SDL_QueryTexture(introTexture, NULL, NULL, &texW, NULL);
