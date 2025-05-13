@@ -299,35 +299,48 @@ public:
         SDL_SetRenderDrawColor(graphics.renderer, 0, 0, 0, 255);
         graphics.drawCircle((int)BALL_RADIUS, hole_x, hole_y);
 
+        SDL_SetRenderDrawColor(graphics.renderer, 165, 42, 42, 255); // Brown color
+for (const auto& obstacle : obstacles) {
+    SDL_SetRenderDrawColor(graphics.renderer, obstacle.color.r, obstacle.color.g, obstacle.color.b, obstacle.color.a);
+    if (obstacle.isRotating) {
+        float centerX = obstacle.x + obstacle.w / 2;
+        float centerY = obstacle.y + obstacle.h / 2;
+        float rad = obstacle.rotationAngle * M_PI / 180.0f;
+        SDL_Point points[5];
+        float halfW = obstacle.w / 2;
+        float halfH = obstacle.h / 2;
+        points[0] = {static_cast<int>(centerX + (halfW * cos(rad) - halfH * sin(rad))),
+                     static_cast<int>(centerY + (halfW * sin(rad) + halfH * cos(rad)))};
+        points[1] = {static_cast<int>(centerX + (-halfW * cos(rad) - halfH * sin(rad))),
+                     static_cast<int>(centerY + (-halfW * sin(rad) + halfH * cos(rad)))};
+        points[2] = {static_cast<int>(centerX + (-halfW * cos(rad) + halfH * sin(rad))),
+                     static_cast<int>(centerY + (-halfW * sin(rad) - halfH * cos(rad)))};
+        points[3] = {static_cast<int>(centerX + (halfW * cos(rad) + halfH * sin(rad))),
+                     static_cast<int>(centerY + (halfW * sin(rad) - halfH * cos(rad)))};
+        points[4] = points[0];
+
+        // Set brown color for the filled shape
         SDL_SetRenderDrawColor(graphics.renderer, 165, 42, 42, 255);
-         for (const auto& obstacle : obstacles) {
-            SDL_SetRenderDrawColor(graphics.renderer, obstacle.color.r, obstacle.color.g, obstacle.color.b, obstacle.color.a);
-            if (obstacle.isRotating) {
-                float centerX = obstacle.x + obstacle.w / 2;
-                float centerY = obstacle.y + obstacle.h / 2;
-                float rad = obstacle.rotationAngle * M_PI / 180.0f;
-                SDL_Point points[5];
-                float halfW = obstacle.w / 2;
-                float halfH = obstacle.h / 2;
-                points[0] = {static_cast<int>(centerX + (halfW * cos(rad) - halfH * sin(rad))),
-                             static_cast<int>(centerY + (halfW * sin(rad) + halfH * cos(rad)))};
-                points[1] = {static_cast<int>(centerX + (-halfW * cos(rad) - halfH * sin(rad))),
-                             static_cast<int>(centerY + (-halfW * sin(rad) + halfH * cos(rad)))};
-                points[2] = {static_cast<int>(centerX + (-halfW * cos(rad) + halfH * sin(rad))),
-                             static_cast<int>(centerY + (-halfW * sin(rad) - halfH * cos(rad)))};
-                points[3] = {static_cast<int>(centerX + (halfW * cos(rad) + halfH * sin(rad))),
-                             static_cast<int>(centerY + (halfW * sin(rad) - halfH * cos(rad)))};
-                points[4] = points[0];
-                SDL_RenderDrawLines(graphics.renderer, points, 5);
-            } else {
-                SDL_Rect obstacleRect = {(int)obstacle.x, (int)obstacle.y, (int)obstacle.w, (int)obstacle.h};
-                SDL_RenderFillRect(graphics.renderer, &obstacleRect);
-            }
-        }
+
+        // Option 1: Use SDL_gfx for filled polygon (if available)
+        // filledPolygonRGBA(graphics.renderer, &points[0].x, &points[0].y, 4, 165, 42, 42, 255);
+
+        // Option 2: Approximate with SDL_RenderFillRect (less accurate for rotation)
+        SDL_Rect rotatedRect = {(int)(obstacle.x), (int)(obstacle.y), (int)obstacle.w, (int)obstacle.h};
+        SDL_RenderFillRect(graphics.renderer, &rotatedRect); // Note: This won't rotate the fill
+
+        // Restore obstacle color for outline if needed
+        SDL_SetRenderDrawColor(graphics.renderer, obstacle.color.r, obstacle.color.g, obstacle.color.b, obstacle.color.a);
+        SDL_RenderDrawLines(graphics.renderer, points, 5);
+    } else {
+        SDL_Rect obstacleRect = {(int)obstacle.x, (int)obstacle.y, (int)obstacle.w, (int)obstacle.h};
+        SDL_RenderFillRect(graphics.renderer, &obstacleRect);
+    }
+}
         drawPowerBar();
 
         // Hiển thị số lần đánh và giới hạn
-        string shotText = "Shots: " + to_string(shotCount) + " Shots limit: " + to_string(maxShots);
+        string shotText = "Shots: " + to_string(shotCount) + "     Shots limit: " + to_string(maxShots);
         graphics.renderText(shotText.c_str(), "C:\\Users\\Dell\\Documents\\lap trinh nang cao\\1803\\ARCADECLASSIC.TTF", 24, {255, 255, 255, 255}, 10, 10);
 
         if (levelCompleted) {

@@ -481,7 +481,7 @@
 
 1742804021 c:\users\dell\documents\lap trinh nang cao\1803\untitled1.h
 
-1746953387 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
+1747149185 c:\users\dell\documents\lap trinh nang cao\1803\nhanvat.h
 	<SDL.h>
 	<iostream>
 	<cmath>
@@ -496,7 +496,7 @@
 
 1745986492 c:\users\dell\documents\lap trinh nang cao\1803\defs.h
 
-1746550863 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
+1747149185 c:\users\dell\documents\lap trinh nang cao\1803\graphic.h
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
@@ -524,7 +524,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1746951902 source:c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.cpp
+1747147427 source:c:\users\dell\documents\lap trinh nang cao\1803\levelmanager.cpp
 	<iostream>
 	"LevelManager.h"
 	"nhanvat.h"
